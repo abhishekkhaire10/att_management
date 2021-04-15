@@ -1,0 +1,5 @@
+host : 'database-1.cedirjofqbkf.us-east-1.rds.amazonaws.com'
+user : 'mysqldb2018'
+password : 'mysqldb2018'
+dbname : 'attendance_system'
+port : 3306
