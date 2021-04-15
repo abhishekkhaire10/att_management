@@ -1,6 +1,6 @@
 *
 !.gitignore
-app.py
-config.yaml
-requirements.txt
-templates/**
+!app.py
+!config.yaml
+!requirements.txt
+!templates/*
