@@ -8,23 +8,42 @@
           <div class="container-fluid">
             <div class= "row  align-items-center mt-4">
               <div class = "row justify-content-center">
-                <div class = "col-4 ">
-                  {% with messages = get_flashed_messages() %}
+                <div class = "col-8 ">
+                  {% with messages = get_flashed_messages(with_categories = true) %}
                   {% if messages %}
-                    {% for msg in messages %}
-                      <h5 class = "alert alert-success text-center" role="alert">{{msg}}</h5>
+                    {% for category, message in messages %}
+                      <h5 class = "alert alert-{{ category }} text-center" role="alert">{{message}}</h5>
                     {% endfor %}
                   {% endif %}
                 {% endwith %}
                 </div>
               </div>
-              <div class= "col-md-auto mb-5 mx-auto align-self-center">
-                <h1 class="text-success">Welcome {{student_name}}</h1>
+              <div class="container text-center mt-2">
+                <h3 class="text-muted">Attendance Status</h3>
+                    <button type="button" class="btn btn-primary  btn-lg">
+                      Total Lectures 
+                      <span class="badge bg-light text-muted">{{total}}</span>
+                    </button>
+                    <button type="button" class="btn btn-success  btn-lg">
+                      Attended 
+                      <span class="badge bg-light text-muted">{{attended}}</span>
+                    </button>
+                    <button type="button" class="btn btn-danger  btn-lg">
+                      Missed
+                      <span class="badge bg-light text-muted">{{missed}}</span>
+                    </button>
+                    <button type="button" class="btn btn-warning  btn-lg">
+                      Attendance Percentage
+                      <span class="badge bg-light text-muted">{{percentage}}</span>
+                    </button>
+              </div>
+              <div class= "col-md-auto mb-5 mx-auto align-self-center mt-5">
+                <h1 class="text-muted">Welcome {{student_name}}</h1>
               </div> 
               <div class = "row align-items-center">
                 <div class="d-grid gap-4 col-6 mx-auto">
-                  <button class="btn btn-primary" type="button">Mark Todays attendance</button>
-                  <button class="btn btn-primary" type="button">View your attendance record</button>
+                  <a href="/mark_attendance" class="btn btn-primary">Mark Todays attendence</a>
+                  <a href="/view_records_student" class="btn btn-primary">View Attendance History</a>
                   <a href="/logout" class="btn btn-primary">Logout</a>
                 </div>
               </div> 
