@@ -234,7 +234,7 @@ def view_records_student():
 # def student_homepage(name):
 #     return render_template('student_homepage.html', name = name)
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
 
-app.run(host = '0.0.0.0', port = '8080', debug=True)
+# app.run(host = '0.0.0.0', port = '8080', debug=True)
