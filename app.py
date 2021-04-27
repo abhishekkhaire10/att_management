@@ -212,7 +212,7 @@ def view_records_student():
     sql_data_list = []
     for course in course_list:
         cur = mysql.connection.cursor()
-        cur.execute('SELECT marking_date, marking_time FROM '+course+' WHERE student_id = "'+str(student_id)+'"')
+        cur.execute('SELECT  DAYNAME(marking_date), marking_date, marking_time FROM '+course+' WHERE student_id = "'+str(student_id)+'"')
         result = cur.fetchall()
         sql_data_list.append(result)
         print(sql_data_list)
@@ -234,7 +234,7 @@ def view_records_student():
 # def student_homepage(name):
 #     return render_template('student_homepage.html', name = name)
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
 
-app.run(host = '0.0.0.0', port = '8080', debug=True)
+# app.run(host = '0.0.0.0', port = '8080', debug=True)
