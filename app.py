@@ -200,7 +200,16 @@ def turn_off_attendance():
 @app.route('/view_records_teacher')
 def view_records_teacher():
     cur = mysql.connection.cursor()
-    cur.execute('Select * from cloud_computing_lab')
+    cur.execute('''SELECT student_id, student_name, DATE_FORMAT(marking_date, '%D %M %Y, %W'),
+                    DATE_FORMAT(marking_time, '%r') FROM 
+                    (select * FROM cloud_computing_lab
+                    union all
+                    select * FROM project_management
+                    union all
+                    select * FROM human_machine_interaction
+                    union all
+                    select * FROM distributed_computing) as unioned
+                    ORDER BY marking_date ASC''')
     results = cur.fetchall()
     return render_template('view_records_teacher.html', results = results)
 
@@ -210,19 +219,42 @@ def view_records_student():
     student_id = session['student_id']
     course_list = ['cloud_computing_lab', 'human_machine_interaction', 'project_management', 'distributed_computing']
     sql_data_list = []
+    date_format = '%D %M %Y, %W'
     for course in course_list:
         cur = mysql.connection.cursor()
-        cur.execute('SELECT  DAYNAME(marking_date), marking_date, marking_time FROM '+course+' WHERE student_id = "'+str(student_id)+'"')
+        cur.execute('SELECT DATE_FORMAT(marking_date, "'+date_format+'"), DATE_FORMAT(marking_time, "'"%r"'") FROM '+course+' WHERE student_id = "'+str(student_id)+'"')
         result = cur.fetchall()
         sql_data_list.append(result)
-        print(sql_data_list)
+    cur.execute('''SELECT DATE_FORMAT(marking_date, '%D %M %Y, %W'), DATE_FORMAT(marking_time, '%r') FROM(SELECT * FROM cloud_computing_lab
+                            union all
+                            select * FROM project_management
+                            union all
+                            select * FROM human_machine_interaction
+                            union all
+                            select * FROM distributed_computing) as unioned
+                            where student_id ='''+str(student_id)+'''
+                        ORDER BY marking_date ASC''')
+    result = cur.fetchall()
     if request.method == 'POST':
         subject = request.form.get('select_widget')
         print(subject)
-        index = course_list.index(subject)
-        print(sql_data_list[index])
-        return render_template('view_records_student.html', results = sql_data_list[index], sub_name = subject.replace('_', ' ').capitalize())
-    return render_template('view_records_student.html')
+        if subject == 'All':
+            cur.execute('''SELECT DATE_FORMAT(marking_date, '%D %M %Y, %W'), DATE_FORMAT(marking_time, '%r') FROM(SELECT * FROM cloud_computing_lab
+                            union all
+                            select * FROM project_management
+                            union all
+                            select * FROM human_machine_interaction
+                            union all
+                            select * FROM distributed_computing) as unioned
+                            where student_id ='''+str(student_id)+'''
+                            ORDER BY marking_date ASC''')
+            result = cur.fetchall()
+            return render_template('view_records_student.html', results = result, sub_name = subject.replace('_', ' ').capitalize())
+        else:  
+            index = course_list.index(subject)
+            print(sql_data_list[index])
+            return render_template('view_records_student.html', results = sql_data_list[index], sub_name = subject.replace('_', ' ').capitalize())
+    return render_template('view_records_student.html', results = result, sub_name = 'ALL')
 
 # TODO: #1 Create 'All records for student'
         #2 Use the same code for Professor records
@@ -234,7 +266,7 @@ def view_records_student():
 # def student_homepage(name):
 #     return render_template('student_homepage.html', name = name)
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    # app.run(debug=True)
 
-app.run(host = '0.0.0.0', port = '8080', debug=True)
+    app.run(host = '0.0.0.0', port = '8080', debug=True)
